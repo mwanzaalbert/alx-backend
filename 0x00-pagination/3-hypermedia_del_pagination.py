@@ -36,52 +36,92 @@ class Server:
                                       for i in range(len(dataset))}
         return self.__indexed_dataset
 
-    def get_hyper_index(self, index: int = None,
-                        page_size: int = 10) -> Dict[str, Any]:
-        """
-        Returns a dictionary with pagination information that is
-        deletion-resilient.
+#     def get_hyper_index(self, index: int = None,
+#                         page_size: int = 10) -> Dict[str, Any]:
+#         """
+#         Returns a dictionary with pagination information that is
+#         deletion-resilient.
+#
+#         Args:
+#             index (int): Start index of the requested page.
+#             page_size (int): Number of items per page.
+#
+#         Returns:
+#             Dict[str, Any]: Contains the following keys:
+#                 - 'index': Start index of the current page.
+#                 - 'next_index': Start index for the next page.
+#                 - 'page_size': Number of items on the current page.
+#                 - 'data': List of rows for the current page.
+#
+#         Raises:
+#             AssertionError: If the index is out of range.
+#         """
+#         indexed_dataset = self.indexed_dataset()
+#
+#         # Assert index within range
+#         assert isinstance(index, int) and 0 <= index < len(
+#             indexed_dataset), "Index out of range."
+#
+#         # Retrieve data from the specified index up to the page_size,
+#         # adjusting for missing entries
+#         data, current_index = [], index
+#         while len(data) < page_size and current_index < len(indexed_dataset):
+#             item = indexed_dataset.get(current_index)
+#             if item:
+#                 data.append(item)
+#             current_index += 1
+#
+#         # Calculate the next index to start the following page
+#         next_index = current_index if current_index < len(
+#             indexed_dataset) else None
+#
+#         # Return pagination data as a dictionary
+#         return {
+#             "index": index,
+#             "data": data,
+#             "page_size": len(data),
+#             "next_index": next_index
+#             }
 
+    def get_hyper_index(self, index: int = None, page_size: int = 10) -> Dict:
+        """
+        Retrieves information about a page from a given index with a specified
+        size.
         Args:
-            index (int): Start index of the requested page.
-            page_size (int): Number of items per page.
-
+            index (int): The starting index of the page.
+            page_size (int): The number of items per page.
         Returns:
-            Dict[str, Any]: Contains the following keys:
-                - 'index': Start index of the current page.
-                - 'next_index': Start index for the next page.
-                - 'page_size': Number of items on the current page.
-                - 'data': List of rows for the current page.
-
-        Raises:
-            AssertionError: If the index is out of range.
+            Dict: Contains 'index', 'next_index', 'page_size', and 'data'.
         """
-        indexed_dataset = self.indexed_dataset()
+        data = self.indexed_dataset()
+        # Ensure the index is within the bounds of the data keys
+        assert index is not None and 0 <= index <= max(data.keys()), (
+            "Index out of range.")
 
-        # Assert index within range
-        assert isinstance(index, int) and 0 <= index < len(
-            indexed_dataset), "Index out of range."
+        # Initialize variables for pagination
+        page_data = []
+        data_count = 0
+        next_index = None
 
-        # Retrieve data from the specified index up to the page_size,
-        # adjusting for missing entries
-        data, current_index = [], index
-        while len(data) < page_size and current_index < len(indexed_dataset):
-            item = indexed_dataset.get(current_index)
-            if item:
-                data.append(item)
-            current_index += 1
+        # Iterate through the dataset starting from 'index'
+        for i in range(index, max(data.keys()) + 1):
+            if i in data:  # Skip missing entries
+                page_data.append(data[i])
+                data_count += 1
+            # Stop when we've collected enough items for the page
+            if data_count == page_size:
+                next_index = i + 1
+                break
 
-        # Calculate the next index to start the following page
-        next_index = current_index if current_index < len(
-            indexed_dataset) else None
-
-        # Return pagination data as a dictionary
-        return {
-            "index": index,
-            "data": data,
-            "page_size": len(data),
-            "next_index": next_index
+        # Return page information
+        page_info = {
+            'index': index,
+            'data': page_data,
+            'page_size': len(page_data),
+            'next_index': next_index
             }
+
+        return page_info
 
 
 if __name__ == "__main__":
