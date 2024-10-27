@@ -78,10 +78,10 @@ class Server:
         # Return pagination data as a dictionary
         return {
             "index": index,
-            "next_index": next_index,
-            "page_size": len(data),
             "data": data,
-        }
+            "page_size": len(data),
+            "next_index": next_index
+            }
 
 
 if __name__ == "__main__":
