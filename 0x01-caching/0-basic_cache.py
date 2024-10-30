@@ -55,10 +55,8 @@ class BasicCache(BaseCaching):
 
         If either `key` or `item` is None, this function will do nothing.
         """
-        if key is None or item is None:
-            return
-
-        self.cache_data[key] = item
+        if key is not None and item is not None:
+            self.cache_data[key] = item
 
     def get(self, key: str) -> Optional[str]:
         """
