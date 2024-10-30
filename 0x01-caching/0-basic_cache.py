@@ -45,7 +45,7 @@ class BasicCache(BaseCaching):
     based on provided keys.
     """
 
-    def put(self, key: str, item: st) -> None:
+    def put(self, key: str, item: str) -> None:
         """
         Add an item to the cache under the specified key.
 
