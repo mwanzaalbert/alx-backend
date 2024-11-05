@@ -83,7 +83,7 @@ def get_user() -> Optional[Dict[str, Optional[str]]]:
     """
     try:
         user_id: int = int(request.args.get("login_as"))
-        return users.get(user_id)
+        return users.get(user_id, None)
     except (TypeError, ValueError):
         return None
 
