@@ -45,6 +45,11 @@ def get_locale() -> str:
         str: The best matching language code based on the 'Accept-Language'
         header.
     """
+    # Check if the locale parameter is in the URL query string
+    locale: str = request.args.get('locale', '')
+    if locale in app.config['LANGUAGES']:
+        return locale
+    # Fall back to the accepted language from request headers
     return request.accept_languages.best_match(app.config['LANGUAGES'])
 
 
