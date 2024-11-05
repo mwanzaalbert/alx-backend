@@ -9,10 +9,8 @@ It includes a locale selector function to determine the best language match
 based on the user's preferences.
 """
 
-from flask import Flask, render_template, request
+from flask import Flask, render_template, request, g
 from flask_babel import Babel, gettext
-
-app: Flask = Flask(__name__)
 
 
 class Config:
@@ -24,10 +22,12 @@ class Config:
         BABEL_DEFAULT_LOCALE (str): Default locale for the application.
         BABEL_DEFAULT_TIMEZONE (str): Default timezone for the application.
     """
-    LANGUAGES: list = ["en", "fr"]
-    BABEL_DEFAULT_LOCALE: str = "en"
-    BABEL_DEFAULT_TIMEZONE: str = "UTC"
+    LANGUAGES = ["en", "fr"]
+    BABEL_DEFAULT_LOCALE = "en"
+    BABEL_DEFAULT_TIMEZONE = "UTC"
 
+
+app: Flask = Flask(__name__)
 
 # Apply the configuration to the app
 app.config.from_object(Config)
@@ -35,7 +35,7 @@ app.config.from_object(Config)
 app.url_map.strict_slashes = False
 
 # Instantiate the Babel object for internationalization support
-babel: Babel = Babel(app)
+babel = Babel(app)
 
 
 @babel.localeselector
@@ -47,7 +47,7 @@ def get_locale() -> str:
         str: The best matching language code based on the 'Accept-Language'
         header.
     """
-
+#     return "fr"
     return request.accept_languages.best_match(app.config['LANGUAGES'])
 
 

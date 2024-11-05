@@ -35,7 +35,7 @@ app.config.from_object(Config)
 app.url_map.strict_slashes = False
 
 # Instantiate the Babel object for internationalization support
-babel: Babel = Babel(app)
+babel = Babel(app)
 
 
 @babel.localeselector
