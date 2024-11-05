@@ -44,5 +44,5 @@ msgstr ""
 
 #: templates/index.html:20
 msgid "current_time_is"
-msgstr "he current time is %(current_time)s."
+msgstr "The current time is %(current_time)s."
 
