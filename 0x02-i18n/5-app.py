@@ -1,51 +1,107 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+"""
+A Flask web application with internationalization using Flask-Babel.
+
+This module configures a Flask application to support multiple languages
+(English and French), sets default locale and timezone configurations,
+and handles user context for locale preferences based on user login.
+"""
+
 from flask import Flask, render_template, request, g
 from flask_babel import Babel, gettext
 
-app = Flask(__name__)
+app: Flask = Flask(__name__)
 
 # Mock user database
-users = {
+users: dict[int, dict[str, str]] = {
     1: {"name": "Balou", "locale": "fr", "timezone": "Europe/Paris"},
     2: {"name": "Beyonce", "locale": "en", "timezone": "US/Central"},
     3: {"name": "Spock", "locale": "kg", "timezone": "Vulcan"},
     4: {"name": "Teletubby", "locale": None, "timezone": "Europe/London"},
 }
 
-class Config:
-    LANGUAGES = ["en", "fr"]
-    BABEL_DEFAULT_LOCALE = "en"
-    BABEL_DEFAULT_TIMEZONE = "UTC"
 
+class Config:
+    """
+    Configuration class for setting language and timezone options.
+
+    Attributes:
+        LANGUAGES (list): Supported languages for the application.
+        BABEL_DEFAULT_LOCALE (str): Default locale for the application.
+        BABEL_DEFAULT_TIMEZONE (str): Default timezone for the application.
+    """
+    LANGUAGES: list = ["en", "fr"]
+    BABEL_DEFAULT_LOCALE: str = "en"
+    BABEL_DEFAULT_TIMEZONE: str = "UTC"
+
+
+# Apply the configuration to the app
 app.config.from_object(Config)
 
-# Instantiate the Babel object
-babel = Babel(app)
+# Instantiate the Babel object for internationalization support
+babel: Babel = Babel(app)
+
 
 @babel.localeselector
-def get_locale():
-    locale = request.args.get('locale')
+def get_locale() -> str:
+    """
+    Determine the best match for supported languages based on user preferences.
+
+    First, check if the 'locale' parameter is provided in the URL query string.
+    If valid, this locale is used.
+    If a user is logged in, their locale preference
+    is checked next. Finally, it falls back to the language best matching the
+    'Accept-Language' header.
+
+    Returns:
+        str: The best matching language code based on URL parameter,
+        user preference, or headers.
+    """
+    locale: str = request.args.get('locale')
     if locale in app.config['LANGUAGES']:
         return locale
     if g.get('user') and g.user.get('locale') in app.config['LANGUAGES']:
         return g.user['locale']
     return request.accept_languages.best_match(app.config['LANGUAGES'])
 
-def get_user():
-    """Retrieve a user based on the login_as parameter."""
+
+def get_user() -> dict[str, str] or None:
+    """
+    Retrieve a user based on the login_as parameter.
+
+    Returns:
+        dict or None: The user dictionary if found, otherwise None.
+    """
     try:
-        user_id = int(request.args.get("login_as"))
+        user_id: int = int(request.args.get("login_as"))
         return users.get(user_id)
     except (TypeError, ValueError):
         return None
 
+
 @app.before_request
-def before_request():
-    """Retrieve and set the user in the global context before each request."""
+def before_request() -> None:
+    """
+    Retrieve and set the user in the global context before each request.
+
+    This function is executed before each request and sets the `g.user`
+    variable with the retrieved user information.
+    """
     g.user = get_user()
 
+
 @app.route('/')
-def index():
+def index() -> str:
+    """
+    Render the index page.
+
+    Returns:
+        str: The rendered HTML template for the index page.
+    """
     return render_template('5-index.html')
 
+
 if __name__ == '__main__':
+    # Run the Flask application in debug mode
     app.run(debug=True)
