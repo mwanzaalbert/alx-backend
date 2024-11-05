@@ -33,6 +33,9 @@ class Config:
 
 
 app.config.from_object(Config)
+
+app.url_map.strict_slashes = False
+
 babel = Babel(app)
 
 
@@ -118,4 +121,4 @@ def index() -> str:
 
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000)

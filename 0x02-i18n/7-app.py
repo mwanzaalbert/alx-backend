@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """
-A Flask web application with internationalization and timezone support using Flask-Babel.
+A Flask web application with internationalization and timezone support using
+ Flask-Babel.
 
 This module configures a Flask application to support multiple languages
-(English and French) and timezone selection based on URL parameters, user preferences,
-or a default setting.
+(English and French) and timezone selection based on URL parameters, user
+preferences, or a default setting.
 """
 
 from flask import Flask, render_template, request, g
@@ -41,6 +42,8 @@ class Config:
 
 # Apply the configuration to the app
 app.config.from_object(Config)
+
+app.url_map.strict_slashes = False
 
 # Instantiate the Babel object for internationalization support
 babel: Babel = Babel(app)
@@ -138,4 +141,4 @@ def index() -> str:
 
 if __name__ == '__main__':
     # Run the Flask application in debug mode
-    app.run(debug=True)
+    app.run(host='0.0.0.0', port=5000)
