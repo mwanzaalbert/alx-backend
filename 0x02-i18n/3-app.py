@@ -37,6 +37,8 @@ app.url_map.strict_slashes = False
 # Instantiate the Babel object for internationalization support
 babel = Babel(app)
 
+gettext.__doc__ = """ Dynamically assigns texts to html elements """
+
 
 @babel.localeselector
 def get_locale() -> str:
@@ -64,4 +66,4 @@ def index() -> str:
 
 if __name__ == '__main__':
     # Run the Flask application in debug mode
-    app.run(host='0.0.0.0', port=5000)
+    app.run(debug=True)
