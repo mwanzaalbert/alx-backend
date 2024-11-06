@@ -37,6 +37,8 @@ app.url_map.strict_slashes = False
 # Instantiate the Babel object for internationalization support
 babel = Babel(app)
 
+gettext.__doc__ = """ Dynamically assigns texts to html elements """
+
 
 @babel.localeselector
 def get_locale() -> str:
