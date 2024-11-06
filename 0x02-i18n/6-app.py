@@ -21,9 +21,9 @@ class Config:
         BABEL_DEFAULT_LOCALE (str): Default locale for the application.
         BABEL_DEFAULT_TIMEZONE (str): Default timezone for the application.
     """
-    LANGUAGES: list[str] = ["en", "fr"]
-    BABEL_DEFAULT_LOCALE: str = "en"
-    BABEL_DEFAULT_TIMEZONE: str = "UTC"
+    LANGUAGES = ["en", "fr"]
+    BABEL_DEFAULT_LOCALE = "en"
+    BABEL_DEFAULT_TIMEZONE = "UTC"
 
 
 # Mock user database
