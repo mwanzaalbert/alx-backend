@@ -10,7 +10,6 @@ user preferences, or request headers.
 
 from flask import Flask, render_template, request, g
 from flask_babel import Babel, gettext
-from typing import Optional, Dict
 
 
 class Config:
@@ -62,13 +61,19 @@ def get_locale() -> str:
         user preference, or headers.
     """
     # 1. Check if the locale parameter is in the URL query string
-    locale: Optional[str] = request.args.get('locale')
-    if locale in app.config['LANGUAGES']:
+    locale = request.args.get('locale')
+    if locale and locale in app.config['LANGUAGES']:
         return locale
     # 2. Check if the user is logged in and has a preferred locale
     if g.get('user') and g.user.get('locale') in app.config['LANGUAGES']:
         return g.user['locale']
-    # 3. Fall back to the accepted language from request headers
+
+    # 3. Locale from request header
+    header_locale = request.headers.get('locale', '')
+    if header_locale in app.config['LANGUAGES']:
+        return header_locale
+
+    # 4. Fall back to the accepted language from request headers
     return request.accept_languages.best_match(app.config['LANGUAGES'])
 
 
