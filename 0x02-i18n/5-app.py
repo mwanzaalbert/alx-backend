@@ -39,7 +39,7 @@ babel = Babel(app)
 gettext.__doc__ = """ Dynamically assigns texts to html elements"""
 
 # Mock user database
-users: dict[int, dict[str, str]] = {
+users = {
     1: {"name": "Balou", "locale": "fr", "timezone": "Europe/Paris"},
     2: {"name": "Beyonce", "locale": "en", "timezone": "US/Central"},
     3: {"name": "Spock", "locale": "kg", "timezone": "Vulcan"},
