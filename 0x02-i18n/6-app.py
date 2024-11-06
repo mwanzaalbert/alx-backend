@@ -12,16 +12,6 @@ from flask import Flask, render_template, request, g
 from flask_babel import Babel, gettext
 from typing import Optional, Dict
 
-app: Flask = Flask(__name__)
-
-# Mock user database
-users: Dict[int, Dict[str, Optional[str]]] = {
-    1: {"name": "Balou", "locale": "fr", "timezone": "Europe/Paris"},
-    2: {"name": "Beyonce", "locale": "en", "timezone": "US/Central"},
-    3: {"name": "Spock", "locale": "kg", "timezone": "Vulcan"},
-    4: {"name": "Teletubby", "locale": None, "timezone": "Europe/London"},
-}
-
 
 class Config:
     """
@@ -37,6 +27,16 @@ class Config:
     BABEL_DEFAULT_TIMEZONE: str = "UTC"
 
 
+# Mock user database
+users{
+    1: {"name": "Balou", "locale": "fr", "timezone": "Europe/Paris"},
+    2: {"name": "Beyonce", "locale": "en", "timezone": "US/Central"},
+    3: {"name": "Spock", "locale": "kg", "timezone": "Vulcan"},
+    4: {"name": "Teletubby", "locale": None, "timezone": "Europe/London"},
+}
+
+app: Flask = Flask(__name__)
+
 # Apply the configuration to the app
 app.config.from_object(Config)
 
@@ -46,6 +46,7 @@ app.url_map.strict_slashes = False
 babel = Babel(app)
 
 gettext.__doc__ = """ Dynamically assigns texts to html elements"""
+
 
 @babel.localeselector
 def get_locale() -> str:
@@ -71,7 +72,7 @@ def get_locale() -> str:
     return request.accept_languages.best_match(app.config['LANGUAGES'])
 
 
-def get_user() -> Optional[Dict[str, Optional[str]]]:
+def get_user():
     """
     Retrieve a user based on the login_as parameter.
 
@@ -79,7 +80,7 @@ def get_user() -> Optional[Dict[str, Optional[str]]]:
     dictionary based on the `login_as` query parameter.
 
     Returns:
-        Optional[Dict[str, Optional[str]]]: The user dictionary if found,
+        The user dictionary if found,
         otherwise None.
     """
     try:
