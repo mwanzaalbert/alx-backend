@@ -44,6 +44,8 @@ app.url_map.strict_slashes = False
 # Instantiate the Babel object for internationalization support
 babel = Babel(app)
 
+gettext.__doc__ = """ Dynamically assigns texts to html elements"""
+
 
 @babel.localeselector
 def get_locale() -> str:
@@ -68,7 +70,7 @@ def get_locale() -> str:
     return request.accept_languages.best_match(app.config['LANGUAGES'])
 
 
-def get_user() -> dict[str, str] or None:
+def get_user():
     """
     Retrieve a user based on the login_as parameter.
 
